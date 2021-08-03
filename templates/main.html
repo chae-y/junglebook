@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>로그인</title>
+    <title>메인페이지</title>
     <meta charset='utf-8' />
     <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no' />
 
@@ -20,11 +20,133 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
+
+    <script>
+        
+        $(document).ready(function(){
+            show();
+        });
+
+        function show(){
+            $('#cards-box').html("")
+            $.ajax({
+                type:'GET',
+                url:'/main/list',
+                data:{},
+                success: function(response){
+                    let bookmarks = response["bookmarks"];
+                    console.log(bookmarks.length);
+                    for(let i=0; i<bookmarks.length; i++){
+                        let bookmark=bookmarks[i];
+                        make(bookmark["url"], bookmark["title"], bookmark["image"], bookmark["click"], bookmark["star"]);
+                    }
+                }
+            })
+        }
+
+        function make(url, title, image, click, star){
+            //<button onclick="star('{{user_id}}','${url}')">${star}</button>
+            let temp_html = `
+                <div class="card">
+                    <div class = "media-content">
+                        <button onclick="star('{{user_id}}','${url}')">${star}</button>
+                        <a href="${url}" target="_blank" onclick="click('{{user_id}}','${url}')">${title}</a>
+                        <p class= "click">클릭수:${click}</p>
+                        <button onclick="delete_BM('{{user_id}}','${url}')">삭제</button>
+                    </div>
+                </div>
+            `;
+            $("#cards-box").append(temp_html);
+        }
+
+        function save(id){
+            let url = $("#post-url").val();
+            $.ajax({
+                type:'POST',
+                url:'/main/post',
+                data:{url_give:url, id_give:id},
+                success: function(response){
+                    if(response["result"]=="success"){
+                        alert("포스팅 성공!");
+                        window.location.reload();
+                    }else if(response["result"]=="same"){
+                        alert("중복된 url입니다");
+                    }
+                    else{
+                        alert("실패");
+                    }
+                }
+            })
+        }
+
+        function star(id, url){
+            $.ajax({
+                type:'POST',
+                url:'/main/star',
+                data:{url_give:url, id_give:id},
+                success: function(response){
+                    if(response["result"]=="success"){
+                        alert("중요표시");
+                        window.location.reload();
+                    }else if(response["result"]=="over"){
+                        alert("5개 이상");
+                    }
+                    else{
+                        alert("오류");
+                    }
+                }
+            })
+        }
+
+        function click(id,url){
+            $.ajax({
+                type:'POST',
+                url:'/main/click',
+                data:{url_give:url, id_give:id},
+                success: function(response){
+                    if(response["result"]=="success"){
+                        alert("+1");
+                        window.location.reload();
+                    }else{
+                        alert("오류");
+                    }
+                }
+            })
+        }
+
+        function delete_BM(id, url){
+            $.ajax({
+                type: 'POST',
+                url: '/main/delete',
+                data: {'url_give':url, 'id_give':id},
+                success: function(response){
+                    if(response['result']=='success'){
+                        alert("삭제 완료!");
+                        window.location.reload();
+                    }
+                }
+            });
+        }
+    </script>
 </head>
 
 <body>
     <div class="container">
         <button type="button" onclick="window.location.href='/signout'" class="btn btn-primary">로그아웃</button>
+    </div>
+    <div class="question-box" >
+        <input id="post-url" type="text" /> <button onclick="save('{{user_id}}')">등록</button>
+    </div>
+    <h1>아이디는 {{user_id}}입니다</h1>
+    <div id="cards-box" class="card-columns">
+        <div class="card">
+            <div class = "media-content">
+                <button onclick="star('{{user_id}}')">중요</button>
+                <a href="https://www.naver.com/" target="_blank" >네이버</a>
+                <p class= "click">클릭수:0</p>
+                <button onclick="delete_BM()">삭제</button>
+            </div>
+        </div>
     </div>
 </body>
 
