@@ -5,6 +5,10 @@ app = Flask(__name__)
 app.secret_key = 'jungle_secret_key'
 app.config['SESSION_TYPE'] = 'filesystem'
 
+from datetime import datetime,timedelta
+import requests
+from bs4 import BeautifulSoup
+
 
 # MongoDB 세팅
 client = MongoClient('localhost', 27017)
@@ -48,10 +52,97 @@ def signin():
 def main():
     if "id" in session:
         id = session["id"]
-        return render_template('main.html', userid=id)
+        return render_template('main.html', user_id=id)
     else:
         return redirect(url_for("/"))
 
+# 북마크 추가
+@app.route('/main/post', methods=['POST'])
+def post_bookmark():
+   
+    # id, 등록시간, url, 메타태그 타이틀, 메타태그 이미지, 클릭수, 중요
+    url_receive = request.form['url_give']
+    id_receive = request.form['id_give']
+
+    if db.bookmarks.find_one( {'id':id_receive,'url':url_receive} ):
+        return jsonify({'result': 'same'})
+
+    headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'}
+    data = requests.get(url_receive, headers=headers)
+    soup = BeautifulSoup(data.text, 'html.parser')
+
+    og_image = soup.select_one('meta[property="og:image"]')
+    og_title = soup.select_one('meta[property="og:title"]')
+
+    url_title = og_title['content']
+    url_image = og_image['content']
+
+    now = datetime.now()
+
+    bookmark = {
+      'id':id_receive,
+      'url':url_receive, 
+      'title':url_title, 
+      'image':url_image,
+      'click':0,
+      'now':now,
+      'star':False
+      }
+
+    db.bookmarks.insert_one(bookmark)
+
+    return jsonify({'result': 'success'})
+
+# 북마크 불러오기
+@app.route('/main/list', methods=['GET'])
+def show_bookmark():
+   now = datetime.now()
+   user_id=session["id"]
+   bookmarks= list(db.bookmarks.find( {'id':user_id} , {'_id':False}))
+
+   day=timedelta(hours=24)
+
+   bookmarks = sorted(bookmarks, key=lambda bm: ((now-bm['now'])> day ,bm['star']==False, -bm['click']))
+   return jsonify({'result':'success', 'bookmarks':bookmarks})
+
+# 즐겨찾기의 즐겨찾기
+@app.route('/main/star', methods=["POST"])
+def star_bm():
+   url_receive = request.form['url_give']
+   id_receive = request.form['id_give']
+
+   bookmark=db.bookmarks.find_one({'id':id_receive, 'url':url_receive})
+   print(bookmark['star'])
+   if not bookmark['star']:
+      if len(list(db.bookmarks.find( {'star':True, 'id':id_receive} , {'_id':False})))>=5:
+         return jsonify({'result':"over"})
+      else: new_star=True
+   else:
+      new_star=False
+
+   db.bookmarks.update_one({'id':id_receive, 'url':url_receive},{'$set':{'star': new_star}})
+
+   return jsonify({'result':'success'})
+
+@app.route('/main/click', methods=["POST"])
+def click_bm():
+   url_receive = request.form['url_give']
+   id_receive = request.form['id_give']
+
+   bookmark=db.bookmarks.find_one({'url':url_receive})
+   new_click = bookmark['click']+1
+
+   db.bookmarks.update_one({'id':id_receive, 'url':url_receive},{'$set':{'click': new_click}})
+
+   return jsonify({'result':'success'})
+
+@app.route('/main/delete', methods=['POST'])
+def delete_bm():
+   url_receive = request.form['url_give']
+   id_receive = request.form['id_give']
+   db.bookmarks.delete_one({'id':id_receive, 'url':url_receive})
+   return jsonify({'result': 'success'})
 
 # 회원가입 화면
 @app.route('/signup', methods=['POST', 'GET'])
