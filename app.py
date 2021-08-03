@@ -48,7 +48,7 @@ def signin():
 def main():
     if "id" in session:
         id = session["id"]
-        return render_template('main.html', id=id)
+        return render_template('main.html', userid=id)
     else:
         return redirect(url_for("/"))
 
