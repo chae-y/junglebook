@@ -1,13 +1,14 @@
 from pymongo import MongoClient
 import bcrypt
 from flask import Flask, request, render_template, jsonify, url_for, redirect, session
-app = Flask(__name__)
-app.secret_key = 'jungle_secret_key'
-app.config['SESSION_TYPE'] = 'filesystem'
 
 from datetime import datetime,timedelta
 import requests
 from bs4 import BeautifulSoup
+
+app = Flask(__name__)
+app.secret_key = 'jungle_secret_key'
+app.config['SESSION_TYPE'] = 'filesystem'
 
 
 # MongoDB 세팅
