@@ -127,6 +127,23 @@
                 }
             });
         }
+
+        function keyevent(){
+            var now = document.getElementById("post-url").value;
+            $('#cards-box').html("")
+            $.ajax({
+                type:'POST',
+                url:'/main/list',
+                data:{url_give:now},
+                success: function(response){
+                    let bookmarks = response["bookmarks"];
+                    for(let i=0; i<bookmarks.length; i++){
+                        let bookmark=bookmarks[i];
+                        make(bookmark["url"], bookmark["title"], bookmark["image"], bookmark["click"], bookmark["star"]);
+                    }
+                }
+            })
+        }
     </script>
 </head>
 
@@ -135,9 +152,9 @@
         <button type="button" onclick="window.location.href='/signout'" class="btn btn-primary">로그아웃</button>
     </div>
     <div class="question-box" >
-        <input id="post-url" type="text" /> <button onclick="save('{{user_id}}')">등록</button>
+        <input id="post-url" type="text" onkeyup="keyevent(this);"/> <button onclick="save('{{user_id}}')">등록</button>
     </div>
-    <h1>아이디는 {{user_id}}입니다</h1>
+    <h1>닉네임은 {{user_nickname}}입니다</h1>
     <div id="cards-box" class="card-columns">
         <div class="card">
             <div class = "media-content">

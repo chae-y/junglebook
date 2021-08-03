@@ -32,9 +32,12 @@ def signin():
         if id_found:
             id_val = id_found['id']
             pw_check = id_found['password']
+            nickname = id_found['nickname']
 
             if bcrypt.checkpw(pw.encode('utf-8'), pw_check):
                 session["id"] = id_val
+                session["nickname"]=nickname
+                
                 return jsonify({'status': 'signedin'})
             else:
                 if "id" in session:
@@ -53,7 +56,8 @@ def signin():
 def main():
     if "id" in session:
         id = session["id"]
-        return render_template('main.html', user_id=id)
+        nickname = session["nickname"]
+        return render_template('main.html', user_id=id, user_nickname=nickname)
     else:
         return redirect(url_for("/"))
 
@@ -114,7 +118,6 @@ def star_bm():
    id_receive = request.form['id_give']
 
    bookmark=db.bookmarks.find_one({'id':id_receive, 'url':url_receive})
-   print(bookmark['star'])
    if not bookmark['star']:
       if len(list(db.bookmarks.find( {'star':True, 'id':id_receive} , {'_id':False})))>=5:
          return jsonify({'result':"over"})
@@ -144,6 +147,18 @@ def delete_bm():
    id_receive = request.form['id_give']
    db.bookmarks.delete_one({'id':id_receive, 'url':url_receive})
    return jsonify({'result': 'success'})
+
+# 검색
+@app.route('/main/list', methods=['POST'])
+def find_bookmark():
+    now = datetime.now()
+    user_id=session["id"]
+    url_receive = request.form['url_give']
+    bookmarks= list(db.bookmarks.find( {'id':user_id,'url':{'$regex': url_receive } }, {'_id':False}))
+    day=timedelta(hours=24)
+
+    bookmarks = sorted(bookmarks, key=lambda bm: ((now-bm['now'])> day ,bm['star']==False, -bm['click']))
+    return jsonify({'result':'success', 'bookmarks':bookmarks})
 
 # 회원가입 화면
 @app.route('/signup', methods=['POST', 'GET'])
