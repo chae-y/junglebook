@@ -162,16 +162,21 @@
 
         function keyevent() {
             var now = document.getElementById("post-url").value;
-            $('#cards-box').html("")
+            $('#bookmark').html("")
             $.ajax({
                 type: 'POST',
                 url: '/main/list',
                 data: { url_give: now },
                 success: function (response) {
-                    let bookmarks = response["bookmark"];
-                    for (let i = 0; i < bookmarks.length; i++) {
-                        let bookmark = bookmarks[i];
-                        make(bookmark["url"], bookmark["title"], bookmark["image"], bookmark["click"], bookmark["star"]);
+                    if (response['result'] == 'success') {
+                        let bookmarks = response["bookmarks"];
+                        for (let i = 0; i < bookmarks.length; i++) {
+                            let bookmark = bookmarks[i];
+                            make(bookmark["url"], bookmark["title"], bookmark["image"], bookmark["click"], bookmark["star"]);
+                        }
+                    }
+                    else{
+                        alert("오류");
                     }
                 }
             })
@@ -204,60 +209,9 @@
                 placeholder="북마크하고 싶은 링크를 등록해주세요">
             <button class="button is-primary" onclick="save('{{user_id}}')">등록</button>
 
-            <!-- <div align="center">
-                <p class=" control has-icons-left">
-                    <input class="input is-primary" type="text" placeholder="정글북에 등록할 링크를 입력해주세요">
-                    <span class="icon is-left">
-                        <i class="fas fa-search" aria-hidden="true"></i>
-                    </span>
-                </p>
-            </div> -->
-
         </div>
         <div class="column is-half is-offset-one-quarter">
             <div class="box" id="bookmark">
-                <!-- <article class="media">
-
-                <div class=" media-left">
-                    <figure class="image is-64x64">
-                        <a href="http://naver.com" target="_blank"><img
-                                src="https://s.pstatic.net/static/www/mobile/edit/2016/0705/mobile_212852414260.png"
-                                alt="Image"></a>
-                    </figure>
-                </div>
-                <div class="media-content">
-                    <div class="content">
-                        <p>
-                            <strong>NAVER</strong>
-                            &nbsp;
-                            <small>클릭수 : 1</small>
-                            <br>
-                            <a href="https://naver.com" target="_blank">https://naver.com</a>
-                        </p>
-                    </div>
-                    <nav class="level is-mobile">
-                        <div class="level-left">
-                            <a class="level-item" aria-label="star">
-                                <span class="icon is-small">
-                                    <i class="far fa-star" aria-hidden="true" onclick="star('{{user_id}}')"></i>
-                                </span>
-                            </a>
-                            <a class="level-item" aria-label="star">
-                                <span class="icon is-small">
-                                    <i class="fas fa-star" aria-hidden="true"></i>
-                                </span>
-                            </a>
-
-                            <a class="level-item" aria-label="trash">
-                                <span class="icon is-small">
-                                    <i class="fas fa-trash" aria-hidden="true"></i>
-                                </span>
-                            </a>
-                        </div>
-                    </nav>
-                </div>
-            </article> -->
-
                 <article class="media" id="cards-box">
 
                     <div class="media-left">
@@ -267,39 +221,6 @@
                                     alt="Image"></a>
                         </figure>
                     </div>
-                    <!-- <div class="media-content">
-                    <div class="content">
-                        <p>
-                            <strong>NAVER</strong>
-                            &nbsp;
-                            <small>클릭수 : 1</small>
-                            <br>
-                            <a href="https://naver.com" target="_blank">https://naver.com</a>
-                        </p>
-                    </div>
-                    <nav class="level is-mobile">
-                        <div class="level-left">
-                            <a class="level-item" aria-label="star">
-                                <span class="icon is-small">
-                                    <i class="far fa-star" aria-hidden="true"></i>
-                                </span>
-                            </a>
-                            <a class="level-item" aria-label="star" onclick="star('{{user_id}}')">
-                                <span class="icon is-small">
-                                    <i class="fas fa-star" aria-hidden="true"></i>
-                                </span>
-                            </a>
-
-                            <a class="level-item" aria-label="trash" onclick="delete_BM()">
-                                <span class="icon is-small">
-                                    <i class="fas fa-trash" aria-hidden="true"></i>
-                                </span>
-                            </a>
-                        </div>
-                    </nav>
-                </div> -->
-
-
                 </article>
             </div>
         </div>
