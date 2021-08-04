@@ -58,7 +58,13 @@ def main():
     if "id" in session:
         id = session["id"]
         nickname = session["nickname"]
-        return render_template('main.html', user_id=id, user_nickname=nickname)
+        
+        now = datetime.now()
+        bookmarks= list(db.bookmarks.find( {'id':id} , {'_id':False}))
+        day=timedelta(hours=24)
+        bookmarks.sort(key=lambda bm: ((now-bm['now'])> day ,bm['star']==False, -bm['click']))
+        
+        return render_template('main.html', user_id=id, user_nickname=nickname, bookmarks_list=bookmarks)
     else:
         return redirect(url_for("signin"))
 
