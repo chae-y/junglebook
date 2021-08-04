@@ -49,26 +49,6 @@
 
     <script>
 
-        $(document).ready(function () {
-            show();
-        });
-
-        function show() {
-            $('#bookmark').html("")
-            $.ajax({
-                type: 'GET',
-                url: '/main/list',
-                data: {},
-                success: function (response) {
-                    let bookmarks = response["bookmarks"];
-                    for (let i = 0; i < bookmarks.length; i++) {
-                        let bookmark = bookmarks[i];
-                        make(bookmark["url"], bookmark["title"], bookmark["image"], bookmark["click"], bookmark["star"]);
-                    }
-                }
-            })
-        }
-
         function make(url, title, image, click, star) {
             // console.log(star);
             if (star == false) {
@@ -134,7 +114,7 @@
                     } else if (response["result"] == "same") {
                         alert("중복된 url입니다");
                     } else if (response["result"] == "none") {
-                        alert("링크를 다시 입력해 주십시오.");
+                        alert("사이트에서 주소를 복사 붙여넣기 해주세요");
                     }
                     else {
                         alert("오류");
@@ -195,13 +175,13 @@
 
         function keyevent() {
             var now = document.getElementById("post-url").value;
-            $('#bookmark').html("")
             $.ajax({
                 type: 'POST',
                 url: '/main/list',
                 data: { url_give: now },
                 success: function (response) {
                     if (response['result'] == 'success') {
+                        $('#bookmark').html("");
                         let bookmarks = response["bookmarks"];
                         for (let i = 0; i < bookmarks.length; i++) {
                             let bookmark = bookmarks[i];
@@ -245,16 +225,49 @@
         </div>
         <div class="column is-half is-offset-one-quarter">
             <div class="box" id="bookmark">
+                {% for bookmark in bookmarks_list %}
+                {% if bookmark['star']== false %}
+                    {% set star='far' %}
+                {% else %}
+                    {% set star='fas' %}
+                {% endif %}
                 <article class="media" id="cards-box">
-
                     <div class="media-left">
                         <figure class="image is-64x64">
-                            <a href="http://naver.com" target="_blank"><img
-                                    src="https://s.pstatic.net/static/www/mobile/edit/2016/0705/mobile_212852414260.png"
-                                    alt="Image"></a>
+                        <a href="{{bookmark['url']}}" target="_blank"><img
+                            src="{{bookmark['image']}}"
+                            alt="Image"></a>
                         </figure>
                     </div>
+
+                    <div class="media-content">
+                        <div class="content">
+                            <p class= "click">
+                                <strong>{{bookmark["title"]}}</strong>
+                                &nbsp;
+                                <a style="cursor:pointer; pointer-events: auto;" target="_blank" onclick="click_BM('{{user_id}}','{{bookmark["url"]}}')">{{bookmark["url"]}}</a>
+                            </p>
+                        </div>
+                        <nav class="level is-mobile">
+                            <div class="level-left">
+                                <a class="level-item" aria-label="star" onclick="star('{{user_id}}','{{bookmark["url"]}}')">
+                                    <span class="icon is-small">
+                                        <i class="{{star}} fa-star" aria-hidden="true"></i>
+                                    </span>
+                                </a>
+
+                                <a class="level-item" aria-label="trash" onclick="delete_BM('{{user_id}}','{{bookmark["url"]}}')">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-trash" aria-hidden="true"></i>
+                                    </span>
+                                </a>
+                                <small>✅&nbsp;{{bookmark["click"]}}</small>
+
+                            </div>
+                        </nav>
+                    </div>
                 </article>
+                {% endfor %}
             </div>
         </div>
 
