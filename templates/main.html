@@ -35,7 +35,6 @@
                 data:{},
                 success: function(response){
                     let bookmarks = response["bookmarks"];
-                    console.log(bookmarks.length);
                     for(let i=0; i<bookmarks.length; i++){
                         let bookmark=bookmarks[i];
                         make(bookmark["url"], bookmark["title"], bookmark["image"], bookmark["click"], bookmark["star"]);
@@ -45,12 +44,11 @@
         }
 
         function make(url, title, image, click, star){
-            //<button onclick="star('{{user_id}}','${url}')">${star}</button>
             let temp_html = `
                 <div class="card">
                     <div class = "media-content">
                         <button onclick="star('{{user_id}}','${url}')">${star}</button>
-                        <a href="${url}" target="_blank" onclick="click('{{user_id}}','${url}')">${title}</a>
+                        <a style="cursor:pointer; pointer-events: auto;" target="_blank" onclick="click_BM('{{user_id}}','${url}')">${title}</a>
                         <p class= "click">클릭수:${click}</p>
                         <button onclick="delete_BM('{{user_id}}','${url}')">삭제</button>
                     </div>
@@ -71,6 +69,8 @@
                         window.location.reload();
                     }else if(response["result"]=="same"){
                         alert("중복된 url입니다");
+                    }else if(response["result"]=="none"){
+                        alert("없는 페이지 입니다");
                     }
                     else{
                         alert("실패");
@@ -98,7 +98,7 @@
             })
         }
 
-        function click(id,url){
+        function click_BM(id,url){
             $.ajax({
                 type:'POST',
                 url:'/main/click',
@@ -106,6 +106,7 @@
                 success: function(response){
                     if(response["result"]=="success"){
                         alert("+1");
+                        window.open(url);
                         window.location.reload();
                     }else{
                         alert("오류");
@@ -144,6 +145,7 @@
                 }
             })
         }
+        
     </script>
 </head>
 
