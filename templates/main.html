@@ -50,8 +50,8 @@
             <article class="media" id="cards-box">
                     <div class="media-left">
                         <figure class="image is-64x64">
-                        <a href="http://naver.com" target="_blank"><img
-                            src="https://s.pstatic.net/static/www/mobile/edit/2016/0705/mobile_212852414260.png"
+                        <a href="${url}" target="_blank"><img
+                            src="${image}"
                             alt="Image"></a>
                         </figure>
                     </div>
@@ -136,7 +136,7 @@
                 data: { url_give: url, id_give: id },
                 success: function (response) {
                     if (response["result"] == "success") {
-                        alert("+1");
+                        // alert("+1");
                         window.open(url);
                         window.location.reload();
                     } else {
@@ -195,7 +195,7 @@
                 <div class="buttons are-small" align="right">
 
                     <button class="button is-text" onclick="window.location.href='/signout'">로그아웃</button>
-                    <button class="button is-text">비밀번호 변경</button>
+                    <!-- <button class="button is-text">비밀번호 변경</button> -->
                 </div>
             </div>
             <br>
