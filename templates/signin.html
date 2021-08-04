@@ -2,18 +2,17 @@
 <html>
 
 <head>
-    <title>로그인</title>
-    <meta charset='utf-8' />
-    <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no' />
-
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-        crossorigin="anonymous"></script>
+    <!-- Bulma 임포트 -->
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <br>
     <!-- AJAX를 위한 Jquery 기본 모드-->
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 
+    <!-- 부트스트랩 임포트 -->
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
         crossorigin="anonymous"></script>
@@ -21,6 +20,7 @@
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
 
+    <!-- 아이디 비밀번호 입력여부 검증 -->
     <script>
         function signin() {
 
@@ -44,8 +44,8 @@
                         if (result == 'pwwrong') {
                             alert("아이디와 비밀번호가 맞지 않습니다.");
                         } else if (result == 'idnotfound') {
-                            alert("가입하지 않은 아이디입니다.");
-                        } else {
+                            alert("없는 계정이거나 비밀번호가 맞지 않습니다.");
+                        } else{
                             window.location.href = "/main";
                         };
                     }
@@ -54,30 +54,71 @@
         }
 
     </script>
+
+
+
 </head>
 
 <body>
-    <div class="container">
-        <div class="mt-5">
-            <h1>로그인</h1>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="box has-text-centered">
+        <br>
+        <br>
+        <section class="hero is-success">
+            <div class="hero-body">
+                <p class="title">
+                    ⛺ 정 글 북 📗
+                </p>
+                <p class="subtitle">
+                <div><br></div>
+                <h4 class="subtitles" align="center">이제 밖에서도 소셜계정 유출 걱정 없이 북마크해요!</h4>
+                </p>
+            </div>
+        </section>
+
+        <h1 class="title" align="center"></h1>
+        <div><br></div>
+
+        <div class="field is-grouped is-grouped-centered">
+            <p class="control has-icons-left">
+                <input class="input is-rounded" id="userid" type="text" placeholder="아 이 디" required minlength="6"
+                    maxlength="20">
+                <span class="icon is-small is-left">
+                    <i class="fas fa-user"></i>
+                </span>
+                <!-- <span class="icon is-small is-right">
+                <i class="fas fa-check"></i>
+            </span> -->
+            </p>
+            <button class="button is-success is-rounded" onclick="location.href='signup'">회원가입</button>
+
         </div>
-        <div class="col-12">
-            <br>
-            <form method="POST">
-                <div class="form-group">
-                    <label for="userid">아이디</label>
-                    <input type="text" class="form-control" id="userid" placeholder="아이디" name="userid" />
-                </div>
-                <div class="form-group">
-                    <label for="password">비밀번호</label>
-                    <input type="password" class="form-control" id="password" placeholder="비밀번호" name="password" />
-                </div>
-                <br>
-                <button type="button" onclick="location.href='signup'" class="btn btn-primary">회원가입</button>
-                <button type="button" onclick="signin()" class="btn btn-primary">로그인</button>
-            </form>
+
+        <div class="field is-grouped is-grouped-centered">
+            <p class="control has-icons-left">
+                <input class="input is-rounded" id="password" type="password" placeholder="비밀번호" required minlength="12"
+                    maxlength="20">
+                <span class="icon is-small is-left">
+                    <i class="fas fa-lock"></i>
+                </span>
+            </p>
+            <button class="button is-info is-rounded" onclick="signin()">로 그 인</button>&nbsp;
         </div>
+
+        <div><br></div>
+
     </div>
+
+    <!-- 
+        https://bulma.io/documentation/form/input/
+        input 태그 안에 아이콘이 포함되어 예쁘게 사용 가능
+    -->
+
+
 </body>
 
 </html>

@@ -1,127 +1,158 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>메인페이지</title>
-    <meta charset='utf-8' />
-    <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no' />
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Bulma 임포트 -->
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-        crossorigin="anonymous"></script>
     <!-- AJAX를 위한 Jquery 기본 모드-->
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-        crossorigin="anonymous"></script>
+    <title>정글북</title>
+    <style>
+        .control {
+            width: 70%;
+        }
+
+        .level-item {
+            color: burlywood;
+        }
+    </style>
 
     <script>
-        
-        $(document).ready(function(){
+
+        $(document).ready(function () {
             show();
         });
 
-        function show(){
-            $('#cards-box').html("")
+        function show() {
+            $('#bookmark').html("")
             $.ajax({
-                type:'GET',
-                url:'/main/list',
-                data:{},
-                success: function(response){
+                type: 'GET',
+                url: '/main/list',
+                data: {},
+                success: function (response) {
                     let bookmarks = response["bookmarks"];
-                    for(let i=0; i<bookmarks.length; i++){
-                        let bookmark=bookmarks[i];
+                    for (let i = 0; i < bookmarks.length; i++) {
+                        let bookmark = bookmarks[i];
                         make(bookmark["url"], bookmark["title"], bookmark["image"], bookmark["click"], bookmark["star"]);
                     }
                 }
             })
         }
 
-        function make(url, title, image, click, star){
+        function make(url, title, image, click, star) {
             let temp_html = `
-                <div class="card">
-                    <div class = "media-content">
-                        <button onclick="star('{{user_id}}','${url}')">${star}</button>
-                        <a style="cursor:pointer; pointer-events: auto;" target="_blank" onclick="click_BM('{{user_id}}','${url}')">${title}</a>
-                        <p class= "click">클릭수:${click}</p>
-                        <button onclick="delete_BM('{{user_id}}','${url}')">삭제</button>
+            <article class="media" id="cards-box">
+                    <div class="media-left">
+                        <figure class="image is-64x64">
+                        <a href="http://naver.com" target="_blank"><img
+                            src="https://s.pstatic.net/static/www/mobile/edit/2016/0705/mobile_212852414260.png"
+                            alt="Image"></a>
+                        </figure>
                     </div>
-                </div>
+
+                    <div class="media-content">
+                        <div class="content">
+                            <p class= "click">
+                                <strong>${title}</strong>
+                                &nbsp;
+                                <a style="cursor:pointer; pointer-events: auto;" target="_blank" onclick="click_BM('{{user_id}}','${url}')">${url}</a>
+                            </p>
+                        </div>
+                        <nav class="level is-mobile">
+                            <div class="level-left">
+                                <a class="level-item" aria-label="star" onclick="star('{{user_id}}','${url}')">
+                                    <span class="icon is-small">
+                                        <i class="far fa-star" aria-hidden="true"></i>
+                                    </span>
+                                </a>
+
+                                <a class="level-item" aria-label="trash" onclick="delete_BM('{{user_id}}','${url}')">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-trash" aria-hidden="true"></i>
+                                    </span>
+                                </a>
+                                <small>✅&nbsp;${click}</small>
+
+                            </div>
+                        </nav>
+                    </div>
+                </article>
             `;
-            $("#cards-box").append(temp_html);
+
+            $("#bookmark").append(temp_html);
         }
 
-        function save(id){
+        function save(id) {
             let url = $("#post-url").val();
             $.ajax({
-                type:'POST',
-                url:'/main/post',
-                data:{url_give:url, id_give:id},
-                success: function(response){
-                    if(response["result"]=="success"){
+                type: 'POST',
+                url: '/main/post',
+                data: { url_give: url, id_give: id },
+                success: function (response) {
+                    if (response["result"] == "success") {
                         alert("포스팅 성공!");
                         window.location.reload();
-                    }else if(response["result"]=="same"){
+                    } else if (response["result"] == "same") {
                         alert("중복된 url입니다");
-                    }else if(response["result"]=="none"){
+                    } else if (response["result"] == "none") {
                         alert("없는 페이지 입니다");
                     }
-                    else{
+                    else {
                         alert("실패");
                     }
                 }
             })
         }
 
-        function star(id, url){
+        function star(id, url) {
             $.ajax({
-                type:'POST',
-                url:'/main/star',
-                data:{url_give:url, id_give:id},
-                success: function(response){
-                    if(response["result"]=="success"){
-                        alert("중요표시");
+                type: 'POST',
+                url: '/main/star',
+                data: { url_give: url, id_give: id },
+                success: function (response) {
+                    if (response["result"] == "success") {
+                        alert("북마스 설정/해제");
                         window.location.reload();
-                    }else if(response["result"]=="over"){
-                        alert("5개 이상");
+                    } else if (response["result"] == "over") {
+                        alert("북마크는 최대 5개까지 가능합니다.");
                     }
-                    else{
-                        alert("오류");
+                    else {
+                        alert("오류발생");
                     }
                 }
             })
         }
 
-        function click_BM(id,url){
+        function click_BM(id, url) {
             $.ajax({
-                type:'POST',
-                url:'/main/click',
-                data:{url_give:url, id_give:id},
-                success: function(response){
-                    if(response["result"]=="success"){
+                type: 'POST',
+                url: '/main/click',
+                data: { url_give: url, id_give: id },
+                success: function (response) {
+                    if (response["result"] == "success") {
                         alert("+1");
                         window.open(url);
                         window.location.reload();
-                    }else{
+                    } else {
                         alert("오류");
                     }
                 }
             })
         }
 
-        function delete_BM(id, url){
+        function delete_BM(id, url) {
             $.ajax({
                 type: 'POST',
                 url: '/main/delete',
-                data: {'url_give':url, 'id_give':id},
-                success: function(response){
-                    if(response['result']=='success'){
+                data: { 'url_give': url, 'id_give': id },
+                success: function (response) {
+                    if (response['result'] == 'success') {
                         alert("삭제 완료!");
                         window.location.reload();
                     }
@@ -129,44 +160,167 @@
             });
         }
 
-        function keyevent(){
+        function keyevent() {
             var now = document.getElementById("post-url").value;
             $('#cards-box').html("")
             $.ajax({
-                type:'POST',
-                url:'/main/list',
-                data:{url_give:now},
-                success: function(response){
-                    let bookmarks = response["bookmarks"];
-                    for(let i=0; i<bookmarks.length; i++){
-                        let bookmark=bookmarks[i];
+                type: 'POST',
+                url: '/main/list',
+                data: { url_give: now },
+                success: function (response) {
+                    let bookmarks = response["bookmark"];
+                    for (let i = 0; i < bookmarks.length; i++) {
+                        let bookmark = bookmarks[i];
                         make(bookmark["url"], bookmark["title"], bookmark["image"], bookmark["click"], bookmark["star"]);
                     }
                 }
             })
         }
-        
     </script>
 </head>
 
 <body>
-    <div class="container">
-        <button type="button" onclick="window.location.href='/signout'" class="btn btn-primary">로그아웃</button>
-    </div>
-    <div class="question-box" >
-        <input id="post-url" type="text" onkeyup="keyevent(this);"/> <button onclick="save('{{user_id}}')">등록</button>
-    </div>
-    <h1>닉네임은 {{user_nickname}}입니다</h1>
-    <div id="cards-box" class="card-columns">
-        <div class="card">
-            <div class = "media-content">
-                <button onclick="star('{{user_id}}')">중요</button>
-                <a href="https://www.naver.com/" target="_blank" >네이버</a>
-                <p class= "click">클릭수:0</p>
-                <button onclick="delete_BM()">삭제</button>
+    <article class="panel is-success">
+        <a onclick="window.location.href='/main'">
+            <p class="panel-heading" align="left">
+                ⛺ 정 글 북 📗
+            </p>
+        </a>
+
+
+        <div class="box has-text-centered">
+            <div class="buttons has-addons is-right">
+                <h6>{{user_nickname}}😀&nbsp;&nbsp;</h6>
+
+                <div class="buttons are-small" align="right">
+
+                    <button class="button is-text" onclick="window.location.href='/signout'">로그아웃</button>
+                    <button class="button is-text">비밀번호 변경</button>
+                </div>
+            </div>
+            <br>
+            <h5 class="subtitle is-5"> 💡 TIP : 많이 클릭한 사이트와 고정된 북마크 순으로 정렬됩니다.</h5><br>
+            <input id="post-url" type="text" class="input is-success " onkeyup="keyevent(this);" style="width:40%"
+                placeholder="북마크하고 싶은 링크를 등록해주세요">
+            <button class="button is-primary" onclick="save('{{user_id}}')">등록</button>
+
+            <!-- <div align="center">
+                <p class=" control has-icons-left">
+                    <input class="input is-primary" type="text" placeholder="정글북에 등록할 링크를 입력해주세요">
+                    <span class="icon is-left">
+                        <i class="fas fa-search" aria-hidden="true"></i>
+                    </span>
+                </p>
+            </div> -->
+
+        </div>
+        <div class="column is-half is-offset-one-quarter">
+            <div class="box" id="bookmark">
+                <!-- <article class="media">
+
+                <div class=" media-left">
+                    <figure class="image is-64x64">
+                        <a href="http://naver.com" target="_blank"><img
+                                src="https://s.pstatic.net/static/www/mobile/edit/2016/0705/mobile_212852414260.png"
+                                alt="Image"></a>
+                    </figure>
+                </div>
+                <div class="media-content">
+                    <div class="content">
+                        <p>
+                            <strong>NAVER</strong>
+                            &nbsp;
+                            <small>클릭수 : 1</small>
+                            <br>
+                            <a href="https://naver.com" target="_blank">https://naver.com</a>
+                        </p>
+                    </div>
+                    <nav class="level is-mobile">
+                        <div class="level-left">
+                            <a class="level-item" aria-label="star">
+                                <span class="icon is-small">
+                                    <i class="far fa-star" aria-hidden="true" onclick="star('{{user_id}}')"></i>
+                                </span>
+                            </a>
+                            <a class="level-item" aria-label="star">
+                                <span class="icon is-small">
+                                    <i class="fas fa-star" aria-hidden="true"></i>
+                                </span>
+                            </a>
+
+                            <a class="level-item" aria-label="trash">
+                                <span class="icon is-small">
+                                    <i class="fas fa-trash" aria-hidden="true"></i>
+                                </span>
+                            </a>
+                        </div>
+                    </nav>
+                </div>
+            </article> -->
+
+                <article class="media" id="cards-box">
+
+                    <div class="media-left">
+                        <figure class="image is-64x64">
+                            <a href="http://naver.com" target="_blank"><img
+                                    src="https://s.pstatic.net/static/www/mobile/edit/2016/0705/mobile_212852414260.png"
+                                    alt="Image"></a>
+                        </figure>
+                    </div>
+                    <!-- <div class="media-content">
+                    <div class="content">
+                        <p>
+                            <strong>NAVER</strong>
+                            &nbsp;
+                            <small>클릭수 : 1</small>
+                            <br>
+                            <a href="https://naver.com" target="_blank">https://naver.com</a>
+                        </p>
+                    </div>
+                    <nav class="level is-mobile">
+                        <div class="level-left">
+                            <a class="level-item" aria-label="star">
+                                <span class="icon is-small">
+                                    <i class="far fa-star" aria-hidden="true"></i>
+                                </span>
+                            </a>
+                            <a class="level-item" aria-label="star" onclick="star('{{user_id}}')">
+                                <span class="icon is-small">
+                                    <i class="fas fa-star" aria-hidden="true"></i>
+                                </span>
+                            </a>
+
+                            <a class="level-item" aria-label="trash" onclick="delete_BM()">
+                                <span class="icon is-small">
+                                    <i class="fas fa-trash" aria-hidden="true"></i>
+                                </span>
+                            </a>
+                        </div>
+                    </nav>
+                </div> -->
+
+
+                </article>
             </div>
         </div>
-    </div>
+
+
+
+        <footer class="footer">
+            <div class="content has-text-centered">
+                <p>
+                    <strong>정글북</strong> by <a
+                        href="https://ovenapp.io/view/Tr1ydyqKZ1u3YnaHNtI2gQ5NPh7GiM6f/jgDvw">[WEEK00] 4조</a>.
+                    The source code is
+                    licensed
+                    <a href="http://opensource.org/licenses/mit-license.php">MIT</a>. The website content
+                    is licensed <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY NC SA 4.0</a>.
+                </p>
+            </div>
+        </footer>
+
+
+
 </body>
 
 </html>
