@@ -5,7 +5,7 @@ from flask import Flask, request, render_template, jsonify, url_for, redirect, s
 from datetime import datetime,timedelta
 import requests
 from bs4 import BeautifulSoup
-from requests.exceptions import MissingSchema
+from requests.exceptions import MissingSchema,InvalidURL
 
 app = Flask(__name__)
 app.secret_key = 'jungle_secret_key'
@@ -78,7 +78,9 @@ def post_bookmark():
     try:
         data = requests.get(url_receive, headers=headers)
     except MissingSchema:
-         return jsonify({'result': 'none'})
+        return jsonify({'result': 'none'})
+    except InvalidURL:
+        return jsonify({'result': 'none'})
     soup = BeautifulSoup(data.text, 'html.parser')
 
     og_image = soup.select_one('meta[property="og:image"]')
