@@ -231,36 +231,38 @@
             <div class="box" id="bookmark">
                 {% for bookmark in bookmarks_list %}
                 {% if bookmark['star']== false %}
-                    {% set star='far' %}
+                {% set star='far' %}
                 {% else %}
-                    {% set star='fas' %}
+                {% set star='fas' %}
                 {% endif %}
                 <article class="media" id="cards-box">
                     <div class="media-left">
                         <figure class="image is-64x64">
-                        <a href="{{bookmark['url']}}" target="_blank"><img
-                            src="{{bookmark['image']}}"
-                            alt="Image"></a>
+                            <a href="{{bookmark['url']}}" target="_blank"><img src="{{bookmark['image']}}"
+                                    alt="Image"></a>
                         </figure>
                     </div>
 
                     <div class="media-content">
                         <div class="content">
-                            <p class= "click">
+                            <p class="click">
                                 <strong>{{bookmark["title"]}}</strong>
                                 &nbsp;
-                                <a style="cursor:pointer; pointer-events: auto;" target="_blank" onclick="click_BM('{{user_id}}','{{bookmark["url"]}}')">{{bookmark["url"]}}</a>
+                                <a style="cursor:pointer; pointer-events: auto;" target="_blank"
+                                    onclick="click_BM('{{user_id}}','{{bookmark[" url"]}}')">{{bookmark["url"]}}</a>
                             </p>
                         </div>
                         <nav class="level is-mobile">
                             <div class="level-left">
-                                <a class="level-item" aria-label="star" onclick="star('{{user_id}}','{{bookmark["url"]}}')">
+                                <a class="level-item" aria-label="star" onclick="star('{{user_id}}','{{bookmark["
+                                    url"]}}')">
                                     <span class="icon is-small">
                                         <i class="{{star}} fa-star" aria-hidden="true"></i>
                                     </span>
                                 </a>
 
-                                <a class="level-item" aria-label="trash" onclick="delete_BM('{{user_id}}','{{bookmark["url"]}}')">
+                                <a class="level-item" aria-label="trash" onclick="delete_BM('{{user_id}}','{{bookmark["
+                                    url"]}}')">
                                     <span class="icon is-small">
                                         <i class="fas fa-trash" aria-hidden="true"></i>
                                     </span>
