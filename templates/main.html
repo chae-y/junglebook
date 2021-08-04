@@ -4,6 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/160/au-kddi/190/green-book_1f4d7.png"
+        rel="shortcut icon" type="image/x-icon">
+
     <!-- Bulma 임포트 -->
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
@@ -12,8 +15,29 @@
     <!-- AJAX를 위한 Jquery 기본 모드-->
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 
+    <!-- Google Fonts 적용 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+
     <title>정글북</title>
     <style>
+        * {
+            font-family: 'Gowun Dodum', sans-serif;
+        }
+
+        .button {
+            font-family: 'Gowun Dodum', sans-serif;
+        }
+
+        .input {
+            font-family: 'Gowun Dodum', sans-serif;
+        }
+
+        .footer {
+            font-family: 'Gowun Dodum', sans-serif;
+        }
+
         .control {
             width: 70%;
         }
@@ -46,6 +70,14 @@
         }
 
         function make(url, title, image, click, star) {
+            // console.log(star);
+            if (star == false) {
+                star = 'far';
+            }
+            else {
+                star = 'fas';
+            }
+
             let temp_html = `
             <article class="media" id="cards-box">
                     <div class="media-left">
@@ -68,7 +100,7 @@
                             <div class="level-left">
                                 <a class="level-item" aria-label="star" onclick="star('{{user_id}}','${url}')">
                                     <span class="icon is-small">
-                                        <i class="far fa-star" aria-hidden="true"></i>
+                                        <i class="${star} fa-star" aria-hidden="true"></i>
                                     </span>
                                 </a>
 
@@ -96,15 +128,16 @@
                 data: { url_give: url, id_give: id },
                 success: function (response) {
                     if (response["result"] == "success") {
-                        alert("포스팅 성공!");
+                        // alert("포스팅 성공!");
+                        star_icon = fas;
                         window.location.reload();
                     } else if (response["result"] == "same") {
                         alert("중복된 url입니다");
                     } else if (response["result"] == "none") {
-                        alert("없는 페이지 입니다");
+                        alert("링크를 다시 입력해 주십시오.");
                     }
                     else {
-                        alert("실패");
+                        alert("오류");
                     }
                 }
             })
@@ -117,7 +150,7 @@
                 data: { url_give: url, id_give: id },
                 success: function (response) {
                     if (response["result"] == "success") {
-                        alert("북마스 설정/해제");
+                        alert("고정");
                         window.location.reload();
                     } else if (response["result"] == "over") {
                         alert("북마크는 최대 5개까지 가능합니다.");
@@ -175,7 +208,7 @@
                             make(bookmark["url"], bookmark["title"], bookmark["image"], bookmark["click"], bookmark["star"]);
                         }
                     }
-                    else{
+                    else {
                         alert("오류");
                     }
                 }
@@ -207,7 +240,7 @@
             <h5 class="subtitle is-5"> 💡 TIP : 많이 클릭한 사이트와 고정된 북마크 순으로 정렬됩니다.</h5><br>
             <input id="post-url" type="text" class="input is-success " onkeyup="keyevent(this);" style="width:40%"
                 placeholder="북마크하고 싶은 링크를 등록해주세요">
-            <button class="button is-primary" onclick="save('{{user_id}}')">등록</button>
+            <button class="button is-success is-active" onclick="save('{{user_id}}')">등록</button>
 
         </div>
         <div class="column is-half is-offset-one-quarter">
@@ -230,12 +263,14 @@
         <footer class="footer">
             <div class="content has-text-centered">
                 <p>
-                    <strong>정글북</strong> by <a
-                        href="https://ovenapp.io/view/Tr1ydyqKZ1u3YnaHNtI2gQ5NPh7GiM6f/jgDvw">[WEEK00] 4조</a>.
+                    <strong>정글북</strong> by <a href="https://ovenapp.io/view/Tr1ydyqKZ1u3YnaHNtI2gQ5NPh7GiM6f/jgDvw"
+                        target="_blank">[WEEK00] 4조</a>.
                     The source code is
                     licensed
-                    <a href="http://opensource.org/licenses/mit-license.php">MIT</a>. The website content
-                    is licensed <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY NC SA 4.0</a>.
+                    <a href="http://opensource.org/licenses/mit-license.php" target="_blank">MIT</a>. The website
+                    content
+                    is licensed <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY NC SA
+                        4.0</a>.
                 </p>
             </div>
         </footer>

@@ -60,7 +60,7 @@ def main():
         nickname = session["nickname"]
         return render_template('main.html', user_id=id, user_nickname=nickname)
     else:
-        return redirect(url_for("/"))
+        return redirect(url_for("signin"))
 
 # 북마크 추가
 
