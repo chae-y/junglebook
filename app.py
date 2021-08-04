@@ -195,8 +195,8 @@ def find_bookmark():
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
 
-    if "id" in session:
-        return redirect(url_for("main"))
+    # if "id" in session:
+    #     return redirect(url_for("main"))
 
     if request.method == "POST":
         userid_receive = request.form['userid_give']
