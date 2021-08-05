@@ -65,6 +65,11 @@
             }
         }
 
+        function keyevent() {
+            if(window.event.keyCode==13){
+                $('#login_button').click();
+            }
+        }
     </script>
 
 
@@ -113,12 +118,12 @@
         <div class="field is-grouped is-grouped-centered">
             <p class="control has-icons-left">
                 <input class="input is-rounded" id="password" type="password" placeholder="비밀번호" required minlength="12"
-                    maxlength="20">
+                    maxlength="20" onkeyup="keyevent(this);">
                 <span class="icon is-small is-left">
                     <i class="fas fa-lock"></i>
                 </span>
             </p>
-            <button class="button is-success is-rounded" onclick="signin()">로 그 인</button>&nbsp;
+            <button class="button is-success is-rounded" onclick="signin()" id="login_button">로 그 인</button>&nbsp;
         </div>
 
         <div><br></div>
