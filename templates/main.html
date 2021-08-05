@@ -238,7 +238,7 @@
         <div class="column is-half is-offset-one-quarter">
             <div class="box" id="bookmark">
                 {% if bookmarks_list |length ==0 %}
-                    <h4>북마크를 추가 해 주세요</h4>
+                    <h4 class="has-text-centered" style="color:#48C78E;">북마크를 추가 해 주세요</h4>
                 {% endif %}
                 {% for bookmark in bookmarks_list %}
                 {% if bookmark['star']== false %}
