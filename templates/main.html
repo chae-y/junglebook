@@ -26,6 +26,11 @@
             font-family: 'Gowun Dodum', sans-serif;
         }
 
+        h4 {
+            font-family: 'Gowun Dodum', sans-serif;
+
+        }
+
         .button {
             font-family: 'Gowun Dodum', sans-serif;
         }
@@ -168,7 +173,7 @@
                 data: { 'url_give': url, 'id_give': id },
                 success: function (response) {
                     if (response['result'] == 'success') {
-                        alert("삭제 완료!");
+                        alert("삭제되었습니다.");
                         window.location.reload();
                     }
                 }
@@ -177,8 +182,8 @@
 
         function keyevent() {
             var now = document.getElementById("post-url").value;
-            if(window.event.keyCode==13){
-                var enter=1;
+            if (window.event.keyCode == 13) {
+                var enter = 1;
             }
             $.ajax({
                 type: 'POST',
@@ -186,12 +191,12 @@
                 data: { url_give: now },
                 success: function (response) {
                     if (response['result'] == 'success') {
-                        if(enter==1){
+                        if (enter == 1) {
                             $('#save_button').click();
-                        }else if(now==""){
+                        } else if (now == "") {
                             window.location.reload();
                         }
-                        else{
+                        else {
                             $('#bookmark').html("");
                             let bookmarks = response["bookmarks"];
                             for (let i = 0; i < bookmarks.length; i++) {
@@ -238,25 +243,25 @@
         <div class="column is-half is-offset-one-quarter">
             <div class="box" id="bookmark">
                 {% if bookmarks_list |length ==0 %}
-                    <h4 class="has-text-centered" style="color:#48C78E;">북마크를 추가 해 주세요</h4>
+                <h4 class="has-text-centered" style="color:#48C78E;">정글북에 아직 북마크가 없네요😥</h4>
                 {% endif %}
                 {% for bookmark in bookmarks_list %}
                 {% if bookmark['star']== false %}
-                    {% set star='far' %}
+                {% set star='far' %}
                 {% else %}
-                    {% set star='fas' %}
+                {% set star='fas' %}
                 {% endif %}
                 <article class="media" id="cards-box">
                     <div class="media-left">
                         <figure class="image is-64x64">
                             <a href="{{bookmark['url']}}" target="_blank"><img src="{{bookmark['image']}}"
-                                alt="Image"></a>
+                                    alt="Image"></a>
                         </figure>
                     </div>
 
                     <div class="media-content">
                         <div class="content">
-                            <p class= "click">
+                            <p class="click">
                                 <strong>{{bookmark["title"]}}</strong>
                                 &nbsp;
                                 <a style="cursor:pointer; pointer-events: auto;" target="_blank"
@@ -270,7 +275,7 @@
                                         <i class="{{star}} fa-star" aria-hidden="true"></i>
                                     </span>
                                 </a>
-
+                                
                                 <a class="level-item" aria-label="trash" onclick="delete_BM('{{user_id}}','{{bookmark["url"]}}')">
                                     <span class="icon is-small">
                                         <i class="fas fa-trash" aria-hidden="true"></i>
@@ -285,8 +290,6 @@
                 {% endfor %}
             </div>
         </div>
-
-
         <div><br></div>
         <footer class="footer">
             <div class="content has-text-centered">
