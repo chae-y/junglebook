@@ -76,6 +76,11 @@
 
         }
 
+        function keyevent() {
+            if(window.event.keyCode==13){
+                $('#signup_button').click();
+            }
+        }
 
     </script>
 
@@ -125,14 +130,14 @@
         </div>
         <div class="field is-grouped is-grouped-centered">
             <p class="control has-icons-left">
-                <input class="input is-rounded" id="nickname" type="text" placeholder="닉네임">
+                <input class="input is-rounded" id="nickname" type="text" placeholder="닉네임" onkeyup="keyevent(this);">
                 <span class="icon is-small is-left">
                     <i class="fas fa-globe"></i>
                 </span>
             </p>
         </div>
         <div><br></div>
-        <button class="button is-success is-rounded" onclick="signup()">가입 완료</button>
+        <button class="button is-success is-rounded" onclick="signup()" id="signup_button">가입 완료</button>
         <div><br><br></div>
 
     </div>
