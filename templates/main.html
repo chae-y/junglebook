@@ -133,7 +133,6 @@
                 data: { url_give: url, id_give: id },
                 success: function (response) {
                     if (response["result"] == "success") {
-                        alert("고정");
                         window.location.reload();
                     } else if (response["result"] == "over") {
                         alert("북마크는 최대 5개까지 가능합니다.");
