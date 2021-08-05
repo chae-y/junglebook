@@ -112,8 +112,7 @@
                 data: { url_give: url, id_give: id },
                 success: function (response) {
                     if (response["result"] == "success") {
-                        // alert("포스팅 성공!");
-                        star_icon = fas;
+                        //alert("포스팅 성공!");
                         window.location.reload();
                     } else if (response["result"] == "same") {
                         alert("중복된 url입니다");
@@ -179,17 +178,24 @@
 
         function keyevent() {
             var now = document.getElementById("post-url").value;
+            if(window.event.keyCode==13){
+                var enter=1;
+            }
             $.ajax({
                 type: 'POST',
                 url: '/main/list',
                 data: { url_give: now },
                 success: function (response) {
                     if (response['result'] == 'success') {
-                        $('#bookmark').html("");
-                        let bookmarks = response["bookmarks"];
-                        for (let i = 0; i < bookmarks.length; i++) {
-                            let bookmark = bookmarks[i];
-                            make(bookmark["url"], bookmark["title"], bookmark["image"], bookmark["click"], bookmark["star"]);
+                        if(enter==1){
+                            $('#save_button').click();
+                        }else{
+                            $('#bookmark').html("");
+                            let bookmarks = response["bookmarks"];
+                            for (let i = 0; i < bookmarks.length; i++) {
+                                let bookmark = bookmarks[i];
+                                make(bookmark["url"], bookmark["title"], bookmark["image"], bookmark["click"], bookmark["star"]);
+                            }
                         }
                     }
                     else {
@@ -224,45 +230,44 @@
             <h5 class="subtitle is-5"> 💡 TIP : 많이 클릭한 사이트와 고정된 북마크 순으로 정렬됩니다.</h5><br>
             <input id="post-url" type="text" class="input is-success " onkeyup="keyevent(this);" style="width:40%"
                 placeholder="북마크하고 싶은 링크를 등록해주세요">
-            <button class="button is-success is-active" onclick="save('{{user_id}}')">등록</button>
+            <button class="button is-success is-active" id="save_button" onclick="save('{{user_id}}')">등록</button>
 
         </div>
         <div class="column is-half is-offset-one-quarter">
             <div class="box" id="bookmark">
+                {# bookmark |length ==0 #}
                 {% for bookmark in bookmarks_list %}
                 {% if bookmark['star']== false %}
-                {% set star='far' %}
+                    {% set star='far' %}
                 {% else %}
-                {% set star='fas' %}
+                    {% set star='fas' %}
                 {% endif %}
                 <article class="media" id="cards-box">
                     <div class="media-left">
                         <figure class="image is-64x64">
                             <a href="{{bookmark['url']}}" target="_blank"><img src="{{bookmark['image']}}"
-                                    alt="Image"></a>
+                                alt="Image"></a>
                         </figure>
                     </div>
 
                     <div class="media-content">
                         <div class="content">
-                            <p class="click">
+                            <p class= "click">
                                 <strong>{{bookmark["title"]}}</strong>
                                 &nbsp;
                                 <a style="cursor:pointer; pointer-events: auto;" target="_blank"
-                                    onclick="click_BM('{{user_id}}','{{bookmark[" url"]}}')">{{bookmark["url"]}}</a>
+                                    onclick="click_BM('{{user_id}}','{{bookmark["url"]}}')">{{bookmark["url"]}}</a>
                             </p>
                         </div>
                         <nav class="level is-mobile">
                             <div class="level-left">
-                                <a class="level-item" aria-label="star" onclick="star('{{user_id}}','{{bookmark["
-                                    url"]}}')">
+                                <a class="level-item" aria-label="star" onclick="star('{{user_id}}','{{bookmark["url"]}}')">
                                     <span class="icon is-small">
                                         <i class="{{star}} fa-star" aria-hidden="true"></i>
                                     </span>
                                 </a>
 
-                                <a class="level-item" aria-label="trash" onclick="delete_BM('{{user_id}}','{{bookmark["
-                                    url"]}}')">
+                                <a class="level-item" aria-label="trash" onclick="delete_BM('{{user_id}}','{{bookmark["url"]}}')">
                                     <span class="icon is-small">
                                         <i class="fas fa-trash" aria-hidden="true"></i>
                                     </span>
